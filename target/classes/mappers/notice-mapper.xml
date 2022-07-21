@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="noticeMapper">
+	<resultMap type="Notice" id="noticeResultMap">
+		<id property="noNo" column="NO_NO"></id>
+		<result property="rowNum" column="NO_RNUM"></result>
+		<result property="userNo" column="USER_NO"></result>
+		<result property="noTitle" column="NO_TITLE"></result>
+		<result property="noContent" column="NO_CONTENT"></result>
+		<result property="noInsertDate" column="NO_INSERT_DATE"></result>
+		<result property="noUseYn" column="NO_USE_YN"></result>
+		<result property="noCount" column="NO_COUNT"></result>
+		<result property="noUpdateDate" column="NO_UPDATE_DATE"></result>
+		<!-- <collection property="FileVO" resultMap="fileMapper.fileResultMap"></collection> -->
+	</resultMap>
+	
+	<select id="selectListCount" parameterType="Notice"  resultType="_int">
+		SELECT COUNT(*) FROM NOTICE WHERE NO_USE_YN = 'Y'
+	</select>
+	
+	<select id="selectNoticeList" resultMap="noticeResultMap">
+		SELECT ROW_NUMBER() OVER(ORDER BY NO_INSERT_DATE) AS NO_RNUM, 
+		NO_NO, NO_TITLE, NO_CONTENT, NO_INSERT_DATE, NO_COUNT
+		FROM NOTICE
+		WHERE NO_USE_YN = 'Y'
+		ORDER BY NO_RNUM DESC
+	</select>
+	
+	<select id="selectOne" resultMap="noticeResultMap">
+		SELECT * FROM NOTICE WHERE NO_NO =  #{noNo} AND NO_USE_YN = 'Y'
+	</select>
+	
+	<select id="selectSearchCount" parameterType="Notice" resultType="_int">
+		SELECT COUNT(*) FROM NOTICE WHERE NO_USE_YN = 'Y'
+		<if test="searchCondition.toString() == 'title'">
+			AND NO_TITLE LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'content'">
+			AND NO_CONTENT LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'all'">
+			AND (NO_TITLE LIKE '%' || #{searchValue} || '%'
+			OR NO_CONTENT LIKE '%' || #{searchValue} || '%')
+		</if>
+	</select>
+	
+	<select id="selectSearchList" resultMap="noticeResultMap">
+		SELECT ROW_NUMBER() OVER(ORDER BY NO_INSERT_DATE) AS NO_RNUM,
+		NO_NO, NO_TITLE, NO_CONTENT, NO_INSERT_DATE, NO_COUNT FROM NOTICE
+		WHERE NO_USE_YN = 'Y'
+		<if test="searchCondition.toString() == 'title'">
+			AND NO_TITLE LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'content'">
+			AND NO_CONTENT LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'all'">
+			AND (NO_TITLE LIKE '%' || #{searchValue} || '%'
+			OR NO_CONTENT LIKE '%' || #{searchValue} || '%')
+		</if>
+		ORDER BY NO_RNUM DESC
+	</select>
+	
+	<select id="readNoticeNum" resultMap="noticeResultMap">
+		SELECT NO_NO FROM (SELECT * FROM NOTICE ORDER BY NO_NO DESC) WHERE ROWNUM = 1
+	</select>
+	
+	<select id="readUpdateDate" resultMap="noticeResultMap">
+		SELECT NO_NO FROM (SELECT * FROM NOTICE ORDER BY NO_UPDATE_DATE DESC) WHERE NO_UPDATE_DATE IS NOT NULL AND ROWNUM = 1
+	</select>
+	
+	<insert id="insertNotice" parameterType="Notice">
+		INSERT INTO NOTICE VALUES(NO_NO_SEQ.NEXTVAL, 1, #{noTitle}, #{noContent}, DEFAULT, DEFAULT, DEFAULT, NULL)
+	</insert>
+	
+	<update id="updateCount">
+		UPDATE NOTICE SET NO_COUNT = NO_COUNT + 1 WHERE NO_NO = #{noNo}
+	</update>
+	
+	<update id="updateNotice" parameterType="Notice">
+		UPDATE NOTICE SET NO_TITLE = #{noTitle}, NO_CONTENT = #{noContent}, NO_UPDATE_DATE = SYSDATE WHERE NO_NO = #{noNo}
+	</update>
+	
+	<update id="deleteNotice" parameterType="_int">
+		UPDATE NOTICE SET NO_USE_YN = 'N' WHERE NO_NO = #{noNo}
+	</update>
+	
+</mapper>

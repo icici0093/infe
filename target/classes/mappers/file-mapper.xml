@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fileMapper">
+	<resultMap type="FileVO" id="fileResultMap">
+		<id property="fiNo" column="FI_NO"></id>
+		<result property="boNo" column="BO_NO"></result>
+		<result property="fiInsertDate" column="FI_INSERT_DATE"></result>
+		<result property="fiRealFileName" column="FI_REAL_FILE_NAME"></result>
+		<result property="fiSaveFileName" column="FI_SAVE_FILE_NAME"></result>
+		<result property="fiDirectory" column="FI_DIRECTORY"></result>
+		<result property="fiUseYn" column="FI_USE_YN"></result>
+	</resultMap>
+	
+	<select id="selectList" parameterType="FileVO" resultMap="fileResultMap">
+		SELECT * FROM FILE_TB
+		WHERE FI_USE_YN = 'Y' AND BO_NO = #{boNo}
+	</select>
+	
+	<select id="selectOne" parameterType="_int" resultMap="fileResultMap">
+		SELECT * FROM FILE_TB
+		WHERE FI_NO = #{fiNo}
+		AND FI_USE_YN = 'Y' 
+	</select>
+	
+	<select id="printFile"  resultMap="fileResultMap">
+		SELECT FI_NO, FI_REAL_FILE_NAME FROM FILE_TB WHERE BO_NO = #{boNo} AND FI_USE_YN = 'Y'
+	</select>
+	
+	<insert id="insertFile" parameterType="FileVO">
+		INSERT INTO FILE_TB VALUES( 
+			FILE_SEQ.NEXTVAL, #{boNo}, DEFAULT, #{fiRealFileName}, #{fiSaveFileName}, #{fiDirectory}, DEFAULT
+		)
+	</insert>
+	
+	<update id="deleteFile" parameterType="FileVO">
+		UPDATE FILE_TB SET 
+		FI_USE_YN = 'N'
+		WHERE BO_NO = #{boNo} AND FI_USE_YN = 'Y'
+	</update>
+	
+	<update id="deleteFileByFiNo" parameterType="_int">
+		UPDATE FILE_TB SET
+		FI_USE_YN = 'N'
+		WHERE FI_NO = #{fiNo} AND FI_USE_YN = 'Y'
+	</update>
+</mapper>

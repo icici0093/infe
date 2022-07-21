@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<settings>
+		<!-- null이 전달되면 빈칸이 아닌 null로 인식하도록 설정 -->
+		<setting name="jdbcTypeForNull" value="NULL"/>
+	</settings>
+	
+	<typeAliases>    
+		<typeAlias type="com.infe.notice.Notice" alias="Notice"/>
+		<typeAlias type="com.infe.board.Board" alias="Board"/>
+		<typeAlias type="com.infe.board.Reply" alias="Reply"/>
+		<typeAlias type="com.infe.file.FileVO" alias="FIleVO"/>
+		<typeAlias type="com.infe.member.Member" alias="Member"/>
+        <typeAlias alias="CubeMap" type="com.infe.common.CubeMap" />
+        <typeAlias alias="Integer" type="java.lang.Integer" />
+        <typeAlias alias="String" type="java.lang.String" />
+	</typeAliases>
+	
+	<mappers> 
+		<mapper resource="mappers/notice-mapper.xml"/> 
+		<mapper resource="mappers/board-mapper.xml"/> 
+		<mapper resource="mappers/reply-mapper.xml"/> 
+		<mapper resource="mappers/file-mapper.xml"/> 
+		<mapper resource="mappers/member-mapper.xml"/> 
+		<mapper resource="mappers/social-mapper.xml"/> 
+	</mappers>  
+</configuration> 

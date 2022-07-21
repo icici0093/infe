@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberMapper">
+	<resultMap type="Member" id="memberResultMap">
+		<id property="memNo" column="MEM_NO"></id>
+		<result property="memID" column="ID"></result>
+		<result property="memPW" column="PW"></result>
+		<result property="name" column="NAME"></result>
+		<result property="phone" column="PHONE"></result>
+		<result property="mail" column="MAIL"></result>
+		<result property="postcode" column="POSTCODE"></result>
+		<result property="addr" column="ADDR"></result>
+		<result property="addrDt" column="ADDR_DT"></result>
+		<result property="useYn" column="USE_YN"></result>
+		<result property="memLv" column="MEM_LEVEL"></result>
+	</resultMap>
+	<select id="loginMember" parameterType="Member" resultMap="memberResultMap">
+		SELECT * FROM MEMBER WHERE ID = #{memID} AND PW = #{memPW} AND USE_YN = 'Y'
+	</select>
+	<insert id="enrollMember" parameterType="Member">
+		INSERT INTO MEMBER VALUES (MEMBER_SEQ.NEXTVAL, #{memID}, #{memPW}, #{name}, #{phone}, #{mail}, #{postcode}, #{addr}, #{addrDt}, DEFAULT, DEFAULT)
+	</insert>
+</mapper>

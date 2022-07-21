@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="socialMapper">
+	
+	<!-- 공통 Head -->	
+	<sql id="PagingHead">
+		SELECT
+			*
+		FROM
+			(
+				SELECT
+					 ROWNUM NUMROW
+					,LASTROW.*
+				FROM
+					(
+	</sql>
+	
+	<!-- 공통 Bottom -->
+	<sql id="PagingBottom">
+					) LASTROW
+			)
+		<where>
+			<if test="startRow != 0">
+				NUMROW >= #{startRow}
+			</if>
+			<if test="endRow != 0">
+				AND
+					#{endRow} >= NUMROW
+			</if>
+		</where>
+	</sql>
+	
+	<select id="getReplyList" parameterType="CubeMap" resultType="CubeMap"> 
+		<include refid="PagingHead"/>
+		SELECT * FROM SOCIAL_REPLY 
+		WHERE USE_YN = 'Y'
+		ORDER BY DP_CNT ASC
+		<include refid="PagingBottom"/>	
+	</select>
+	
+	<select id="getReplyCount" parameterType="CubeMap" resultType="Integer">
+		SELECT COUNT(*) FROM SOCIAL_REPLY
+	</select>
+	
+	<select id="getMovList" parameterType="CubeMap" resultType="CubeMap"> 
+		<include refid="PagingHead"/>
+		SELECT * FROM YOUTUBE_MOV 
+		WHERE USE_YN = 'Y'
+		ORDER BY DP_CNT ASC
+		<include refid="PagingBottom"/>	
+	</select>
+	
+	<select id="getMovCount" parameterType="CubeMap" resultType="Integer">
+		SELECT COUNT(*) FROM YOUTUBE_MOV
+	</select>
+	
+	<insert id="setYoutubeReply" parameterType="CubeMap">
+		MERGE INTO SOCIAL_REPLY USING DUAL ON (AUTHOR_NM = #{author_nm} AND RE_CN = #{re_cn} AND MOV_ID = #{mov_id}) 	
+		WHEN MATCHED THEN
+			UPDATE SET
+				 MDFCN_DT = SYSDATE
+		WHEN NOT MATCHED THEN
+			INSERT 
+            (
+                RE_NO,
+                AUTHOR_NM,
+                RE_CN,
+                MOV_ID,
+                REG_DT,
+                DP_CNT,
+                USE_YN
+            )
+			VALUES
+            (
+                SOCIAL_SEQ.NEXTVAL,
+                #{author_nm},
+                #{re_cn},
+                #{mov_id},
+                TO_DATE(#{reg_dt}, 'YYYY.MM.DD HH24:MI:SS'),
+                0,
+                'Y'
+            )
+	</insert>
+	
+	<insert id="setYoutubeMov" parameterType="CubeMap">
+		MERGE INTO YOUTUBE_MOV USING DUAL ON (MOV_ID = #{mov_id}) 	
+		WHEN MATCHED THEN
+			UPDATE SET
+				MOV_NM = #{mov_nm},
+				MOV_CN = #{mov_cn},
+				MDFCN_DT = SYSDATE
+		WHEN NOT MATCHED THEN
+			INSERT 
+            (
+                MOV_NO,
+                MOV_ID,
+                MOV_NM,
+                MOV_CN,
+                REG_DT,
+                DP_CNT,
+                USE_YN
+            )
+			VALUES
+            (
+                MOV_SEQ.NEXTVAL,
+                #{mov_id},
+                #{mov_nm},
+                #{mov_cn},
+                TO_DATE(#{reg_dt}, 'YYYY.MM.DD HH24:MI:SS'),
+                0,
+                'Y'
+            )
+	</insert>
+</mapper>

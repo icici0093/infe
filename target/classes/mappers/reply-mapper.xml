@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="replyMapper">
+	<resultMap type="Reply" id="replyResultMap">
+		<id property="reNo" column="RE_NO"></id>
+		<result property="boNo" column="BO_NO"></result>
+		<result property="memNo" column="MEM_NO"></result>
+		<result property="content" column="CONTENT"></result>
+		<result property="name" column="NAME"></result>
+		<result property="insertDate" column="INSERT_DATE"></result>
+		<result property="updateDate" column="UPDATE_DATE"></result>
+		<result property="deleteDate" column="DELETE_DATE"></result>
+		<result property="useYn" column="USE_YN"></result>
+		<result property="count" column="COUNT"></result>
+		<result property="rGroup" column="RGROUP"></result>
+		<result property="rStep" column="RSTEP"></result>
+		<result property="rIndent" column="RINDENT"></result>
+	</resultMap>
+	
+	<select id="getReplyCount" parameterType="CubeMap" resultType="int">
+		SELECT COUNT(*) FROM REPLY WHERE BO_NO = #{boNo}
+	</select>
+	
+	<select id="selectReplyCount" parameterType="Reply" resultType="_int">
+		SELECT COUNT(*) FROM REPLY WHERE BO_NO = #{boNo}
+	</select>
+	
+	<select id="selectAllReply" resultMap="replyResultMap">
+		SELECT RE_NO, BO_NO, MEM_NO,
+		CASE WHEN USE_YN = 'N' THEN '삭제된 댓글입니다.' ELSE CONTENT END CONTENT, 
+		INSERT_DATE, UPDATE_DATE, NAME, USE_YN, RGROUP, RSTEP, RINDENT
+		FROM REPLY WHERE BO_NO = #{boNo}
+		START WITH RINDENT = 0
+		CONNECT BY PRIOR RE_NO = RSTEP
+		ORDER SIBLINGS BY RGROUP DESC
+	</select>
+	
+	<insert id="insertReply" parameterType="Reply">
+		INSERT INTO REPLY VALUES(RE_NO_SEQ.NEXTVAL, #{boNo}, #{memNo}, #{content}, #{name}, SYSDATE, DEFAULT, DEFAULT, DEFAULT, RE_NO_SEQ.CURRVAL, 0, 0)
+	</insert>
+	
+	<insert id="insertReComment" parameterType="Reply">
+		INSERT INTO REPLY VALUES(RE_NO_SEQ.NEXTVAL, #{boNo}, #{memNo}, #{content}, #{name}, SYSDATE, DEFAULT, DEFAULT, DEFAULT, #{rGroup}, #{reNo}, #{rIndent} + 1)
+	</insert>
+	
+	<update id="updateReply" parameterType="Reply">
+		UPDATE REPLY SET CONTENT = #{content}, UPDATE_DATE = SYSDATE WHERE RE_NO = #{reNo}
+	</update>
+	
+	<update id="deleteReply" parameterType="_int">
+		UPDATE REPLY SET USE_YN = 'N', DELETE_DATE = SYSDATE WHERE RE_NO = #{reNo}
+	</update>
+</mapper>

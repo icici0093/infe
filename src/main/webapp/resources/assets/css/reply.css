@@ -1,0 +1,265 @@
+@charset "UTF-8";
+
+/* 댓글 리스트 */
+#rList {
+	margin-top : 10px;
+}
+
+#reList {
+	margin-top : 10px;
+	margin-left : 100px;
+}
+
+.reply-box {
+	border-bottom: 1px solid #edf2f9 !important;
+	padding : 15px 10px 5px 10px;
+	position : relative; 
+}
+
+.reply-box .rounded-circle {
+	width: 25px;
+}
+
+.reply-box div {
+	padding-bottom:10px;
+}
+
+.reply-box .nickName {
+	font-weight: 500;
+}
+
+.reply-box .writerTag {
+	-webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none;
+	display: inline-block;
+	height: 24px;
+	border-radius: 2em;
+	color: coral;
+ 	border: 1px solid coral;
+ 	padding: 0.25rem 0.5rem;
+  	font-size: 0.875rem;
+  	line-height: 1;
+}
+
+.reply-box .insertDate {
+	font-size : 13px;
+	font-weight: 300;
+  	margin-bottom: 10px;
+	color: #9eabc0;
+	float: right;
+}
+
+.reply-box .contents-box {
+	padding : 10px;
+	font-size : 14px;
+	overflow : auto;
+}
+
+@media screen and (max-width:321px) {
+	.reply-box div:nth-child(2) img {
+		width : 100%;
+	}
+}
+
+.reply-box .btn-group {
+	float: right !important;
+}
+
+	/* 댓글이 로그인한 사람 댓글일 경우 추가할 클래스 */
+	.my-reply {
+		background-color : #fafafa;
+	}
+
+/* 댓글 등록 */
+.reply-enter {
+	margin-top : 20px;
+	position : relative;
+}
+
+.reply-enter-btn {
+	display : block;
+	position : absolute;
+	top : 0;
+	right : 0;
+	border : none;
+	background-color : #34b7a7;
+	height : 100%;
+	width : 9%;
+	color : #fff;
+}
+
+#editor {
+	border : 1px solid #e9ecef;
+	min-height : 100px;
+	width : 90%;
+	resize: none;
+}
+
+#editor2 {
+	border : 1px solid #e9ecef;
+	background-color : #fff;
+	min-height : 100px;
+	width : 90%;
+	resize: none;
+}
+
+#editor3 {
+	border : 1px solid #e9ecef;
+	background-color : #fff;
+	min-height : 100px;
+	width : 90%;
+	resize: none;
+}
+
+/* 댓글 페이징 */
+#rPage {
+	padding : 20px 0 10px 0;
+}
+
+#rPage li {
+	cursor : pointer;
+}
+
+/*******************************************************************/
+
+/* 제목 */
+.card-title {
+	padding-bottom : 10px;
+}
+
+/* 닉네임 옆에 프로필 이미지 */
+.card-subtitle>img {
+	width: 25px;
+}
+
+/* 파일명 표시 */
+.file-box {
+	background-color:#f5f7f8;
+	margin:0 24px 25px 24px;
+}
+
+/* 내용 */
+.content {
+	padding : 0 35px 15px 35px !important;
+}
+
+	/* 내용 영역 보이기 제한(전체보기에서만) */
+	.list-content {
+		max-height : 500px;
+		overflow : hidden;
+	}
+	
+	.list-content p {
+		display : -webkit-box;
+		overflow : hidden;
+		text-overflow : ellipsis;
+		-webkit-line-clamp : 6; 
+		-webkit-box-orient : vertical;
+	}
+
+/* 전체 리스트에서는 댓글 영역 border 없애기 */
+.list-reply {
+	border : none !important;
+}
+
+/* float 버튼 */
+#float-btn {
+	position : fixed;
+	bottom : 12%;
+	right : 2%;
+}
+
+/* top 버튼 */
+#top-btn {
+	background-color : rgba(232, 234, 236, 0.5);
+	color : #fff;
+	border : none;
+	border-radius: 100%;
+	width: 42px;
+	height: 42px;
+	display : block;
+	margin : 10px auto;
+}
+
+#top-btn:hover {
+	background-color : rgba(232, 234, 236, 1);
+}
+
+/* 글쓰기 버튼 */
+#write-btn {
+	border : none;
+	border-radius: 100%;
+	width: 60px;
+	height: 60px;
+	line-height: 20px;
+	padding: 10px;
+	background-color: #6927ff;
+	color : #fff;
+	font-size : 20px;
+}
+
+	#write-btn span {
+		display : none;
+		font-size : 14px;
+		font-weight:500;
+	}
+	
+	#write-btn:hover {
+		background-color: #3e00cc;
+	}
+	
+	#write-btn:hover i {
+		display : none;
+	}
+	
+	#write-btn:hover span {
+		display : block;
+	}
+	
+.reBtn {
+	position : absolute !important;
+	bottom : 12px;
+	right : 28px;
+}
+
+/* 태그들 */
+
+.tags {
+	font-size: 12px;
+	margin-right : 5px;
+	padding : 2px 6px;
+	border-radius : 5px;
+	color : #fff;
+}
+
+	.tag-free {
+		background-color: #818992;
+	}
+	.tag-share {
+		background-color: #22ca80;
+	}
+	.tag-qna {
+		background-color: #ff8499;
+	} 
+	
+/* 별점 */
+.star{
+  display:inline-block;
+  width: 30px;
+  height: 60px;
+  cursor: pointer;
+}
+.star_left{
+  background: url(http://gahyun.wooga.kr/main/img/testImg/star.png) no-repeat 0 0; 
+  background-size: 60px; 
+  margin-right: -3px;
+  color: #F5A164 !important;
+}
+.star_right{
+  background: url(http://gahyun.wooga.kr/main/img/testImg/star.png) no-repeat -30px 0; 
+  background-size: 60px; 
+  margin-left: -3px;
+  color: #F5A164 !important;
+}
+.star.on{
+  background-image: url(http://gahyun.wooga.kr/main/img/testImg/star_on.png);
+} 	

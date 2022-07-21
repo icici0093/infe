@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardMapper">
+	<resultMap type="Board" id="boardResultMap">
+		<id property="boNo" column="BO_NO"></id>
+		<result property="boMotherNo" column="BO_MOTHER_NO"></result>
+		<result property="reMotherNo" column="RE_MOTHER_NO"></result>
+		<result property="rowNum" column="RNUM"></result>
+		<result property="memNo" column="MEM_NO"></result>
+		<result property="name" column="NAME"></result>
+		<result property="title" column="TITLE"></result>
+		<result property="content" column="CONTENT"></result>
+		<result property="insertDate" column="INSERT_DATE"></result>
+		<result property="updateDate" column="UPDATE_DATE"></result>
+		<result property="deleteDate" column="DELETE_DATE"></result>
+		<result property="useYn" column="USE_YN"></result>
+		<result property="count" column="COUNT"></result>
+		<!-- <collection property="FileVO" resultMap="fileMapper.fileResultMap"></collection> -->
+	</resultMap>
+	
+	<!-- 공통 Head -->	
+	<sql id="PagingHead">
+		SELECT
+			*
+		FROM
+			(
+				SELECT
+					 ROWNUM NUMROW
+					,LASTROW.*
+				FROM
+					(
+	</sql>
+	
+	<!-- 공통 Bottom -->
+	<sql id="PagingBottom">
+					) LASTROW
+			)
+		<where>
+			<if test="startRow != 0">
+				NUMROW >= #{startRow}
+			</if>
+			<if test="endRow != 0">
+				AND
+					#{endRow} >= NUMROW
+			</if>
+		</where>
+	</sql>
+	
+	<select id="getBoardList" parameterType="CubeMap" resultType="CubeMap"> 
+		<include refid="PagingHead"/>
+		SELECT 
+			ROWNUM, 
+			BO_NO, 
+			MEM_NO, 
+			NAME, 
+			TITLE, 
+			CONTENT, 
+			TO_CHAR(INSERT_DATE, 'YYYY.MM.DD') AS REG_DT,
+			CASE WHEN TRUNC(SYSDATE - INSERT_DATE) <![CDATA[<=]]> 3 THEN 'NEW'
+			WHEN TRUNC(SYSDATE - INSERT_DATE) <![CDATA[>=]]> 3 THEN 'OLD' END AS REC,
+			COUNT
+	    FROM 
+	    	BOARD
+	    WHERE 
+	    	USE_YN = 'Y' 
+	    AND 
+	    	BO_MOTHER_NO IS NULL
+	    <if test="searchCondition.toString() == 'title'">
+			AND TITLE LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'content'">
+			AND CONTENT LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'all'">
+			AND (TITLE LIKE '%' || #{searchValue} || '%'
+			OR CONTENT LIKE '%' || #{searchValue} || '%')
+		</if> 
+	    ORDER BY ROWNUM DESC
+		<include refid="PagingBottom"/>	
+	</select>
+	
+	<select id="getBoardCount" parameterType="CubeMap" resultType="Integer">
+		SELECT 
+			COUNT(*) 
+		FROM 
+			BOARD 
+		WHERE 
+			USE_YN = 'Y' 
+		AND 
+			BO_MOTHER_NO IS NULL
+		<if test="searchCondition.toString() == 'title'">
+			AND TITLE LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'content'">
+			AND CONTENT LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'all'">
+			AND (TITLE LIKE '%' || #{searchValue} || '%'
+			OR CONTENT LIKE '%' || #{searchValue} || '%')
+		</if> 
+	</select>
+	
+	<select id="getBoardDetail" parameterType="String" resultType="CubeMap">
+		SELECT 
+			BD.*
+		FROM 
+		    BOARD BD
+		WHERE
+		    BD.USE_YN = 'Y'
+		AND
+		    BD.BO_MOTHER_NO IS NULL
+		AND
+		    BD.BO_NO = #{boNo}
+	</select>
+	
+	<select id="getArrayFileList" parameterType="CubeMap" resultType="CubeMap">
+		SELECT
+			*
+		FROM
+			FILE_TB
+		WHERE
+			BO_NO = #{boNo}
+		AND
+			FI_USE_YN = 'Y'
+		ORDER BY
+			FI_NO ASC
+	</select>
+	
+	<select id="selectListCount" parameterType="Board" resultType="_int">
+		SELECT 
+			COUNT(*) 
+		FROM 
+			BOARD 
+		WHERE 
+			USE_YN = 'Y' 
+		AND 
+			BO_MOTHER_NO IS NULL
+	</select>
+	
+	<select id="selectBoardList" resultMap="boardResultMap">
+		SELECT ROWNUM, BO_NO, MEM_NO, NAME, TITLE, CONTENT, INSERT_DATE, COUNT
+	    FROM (SELECT * FROM BOARD ORDER BY BO_NO)
+	    WHERE USE_YN = 'Y' AND BO_MOTHER_NO IS NULL 
+	    ORDER BY ROWNUM DESC
+	</select>
+	
+	<select id="selectOne" resultMap="boardResultMap">
+		SELECT * FROM BOARD WHERE BO_NO = #{boNo} AND USE_YN = 'Y'
+	</select>
+	
+	<select id="selectSearchCount" parameterType="Board" resultType="_int">
+		SELECT COUNT(*) FROM BOARD WHERE USE_YN = 'Y' AND BO_MOTHER_NO IS NULL
+		<if test="searchCondition.toString() == 'title'">
+			AND TITLE LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'content'">
+			AND CONTENT LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'all'">
+			AND (TITLE LIKE '%' || #{searchValue} || '%'
+			OR CONTENT LIKE '%' || #{searchValue} || '%')
+		</if>
+	</select>
+	
+	<select id="selectSearchList" resultMap="boardResultMap">
+		SELECT ROWNUM, BO_NO, MEM_NO, NAME, TITLE, CONTENT, INSERT_DATE, COUNT
+	    FROM (SELECT * FROM BOARD ORDER BY BO_NO)
+	    WHERE USE_YN = 'Y' AND BO_MOTHER_NO IS NULL
+		<if test="searchCondition.toString() == 'title'">
+			AND TITLE LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'content'">
+			AND CONTENT LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition.toString() == 'all'">
+			AND (TITLE LIKE '%' || #{searchValue} || '%'
+			OR CONTENT LIKE '%' || #{searchValue} || '%')
+		</if>
+		ORDER BY ROWNUM DESC
+	</select>
+	
+	<select id="readBoardNum" resultMap="boardResultMap">
+		SELECT BO_NO FROM (SELECT * FROM BOARD ORDER BY BO_NO DESC) WHERE ROWNUM = 1
+	</select>
+	
+	<select id="readUpdateDate" resultMap="boardResultMap">
+		SELECT BO_NO FROM (SELECT * FROM BOARD ORDER BY UPDATE_DATE DESC) WHERE UPDATE_DATE IS NOT NULL AND ROWNUM = 1
+	</select>
+	
+	<insert id="insertBoard" parameterType="Board">
+		INSERT INTO BOARD VALUES(BO_NO_SEQ.NEXTVAL, #{memNo}, #{title}, #{content}, DEFAULT, DEFAULT, DEFAULT, DEFAULT, #{name}, DEFAULT, DEFAULT, DEFAULT)
+	</insert>
+	
+	<update id="updateCount">
+		UPDATE BOARD SET COUNT = COUNT + 1 WHERE BO_NO = #{boNo}
+	</update>
+	
+	<update id="updateBoard" parameterType="Board">
+		UPDATE BOARD SET TITLE = #{title}, CONTENT = #{content}, UPDATE_DATE = SYSDATE WHERE BO_NO = #{boNo}
+	</update>
+	
+	<update id="deleteBoard" parameterType="_int">
+		UPDATE BOARD SET USE_YN = 'N', DELETE_DATE = SYSDATE WHERE BO_NO = #{boNo}
+	</update>
+	
+<!-- 	댓글 @@@@@@@@@@@@@@@@@@@@ -->
+	<select id="selectReplyCount" parameterType="Board" resultType="_int">
+		SELECT COUNT(*) FROM BOARD WHERE BO_MOTHER_NO = #{boMotherNo}
+	</select>
+	
+	<select id="selectAllReply" resultMap="boardResultMap">
+		SELECT ROWNUM, BO_NO, MEM_NO, 
+		CASE WHEN USE_YN = 'N' THEN '삭제된 댓글입니다.' ELSE CONTENT END CONTENT, 
+		INSERT_DATE, UPDATE_DATE, NAME, USE_YN 
+		FROM (SELECT * FROM BOARD WHERE BO_MOTHER_NO = #{boMotherNo} ORDER BY BO_NO)
+		ORDER BY ROWNUM DESC
+	</select>
+	
+	<select id="selectReComments" resultMap="boardResultMap">
+		SELECT ROWNUM, BO_NO, MEM_NO,
+		CASE WHEN USE_YN = 'N' THEN '삭제된 댓글입니다.' ELSE CONTENT END CONTENT, 
+		INSERT_DATE, UPDATE_DATE, NAME, USE_YN 
+		FROM (SELECT * FROM BOARD WHERE BO_MOTHER_NO = #{boMotherNo} ORDER BY BO_NO)
+		ORDER BY ROWNUM DESC
+	</select>
+	
+	<insert id="insertReply" parameterType="Board">
+		INSERT INTO BOARD VALUES(BO_NO_SEQ.NEXTVAL, 1, '댓글', #{content}, SYSDATE, DEFAULT, DEFAULT, DEFAULT, #{name}, DEFAULT, #{boMotherNo}, DEFAULT)
+	</insert>
+	
+	<insert id="insertReComment" parameterType="Board">
+		INSERT INTO BOARD VALUES(BO_NO_SEQ.NEXTVAL, 1, '대댓글', 're : ' + #{content}, SYSDATE, DEFAULT, DEFAULT, DEFAULT, #{name}, DEFAULT, #{boMotherNo}, #{reMotherNo})
+	</insert>
+	
+	<update id="updateReply" parameterType="Board">
+		UPDATE BOARD SET CONTENT = #{content}, UPDATE_DATE = SYSDATE WHERE BO_NO = #{boNo}
+	</update>
+	
+	<update id="deleteReply" parameterType="_int">
+		UPDATE BOARD SET USE_YN = 'N', DELETE_DATE = SYSDATE WHERE BO_NO = #{boNo}
+	</update>
+</mapper>
