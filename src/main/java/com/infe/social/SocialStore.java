@@ -47,4 +47,9 @@ public class SocialStore{
 		boolean result = baseDao._Insert("socialMapper.setYoutubeReply", param);
 		return result;
 	}
+	
+	public List<CubeMap> getMovInfo(CubeMap param) throws Exception {
+		List<CubeMap> thisList = baseDao._List("socialMapper.getMovInfo", param);
+		return thisList;
+	}
 }

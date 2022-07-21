@@ -29,4 +29,10 @@ public class SocialController {
 	public Map<String, Object> setReply(HttpServletRequest request, HttpServletResponse response, ModelMap model, RedirectAttributes redirectAttributes) throws Exception {
 		return sService.setReply(request, response);
 	}
+	
+	@RequestMapping(value = "/social/movView", method = RequestMethod.GET)
+	public String movView(HttpServletRequest request, HttpServletResponse response, ModelMap model, RedirectAttributes redirectAttributes) throws Exception {
+		
+		return sService.movView(request, response, model, redirectAttributes);
+	}
 }

@@ -346,9 +346,18 @@
 			return false;
 		}
 	}
+	function movInfo(mov_id, i){
+		var target = $("#g20Video");
+		
+		target.load('/social/movView?mov_id='+mov_id, function(){
+// 			$('#g20Video').find('p').remove();
+// 			$(i).attr('data-url-utb', mov_id);
+			layerPopupOpen('#g20Video', i);
+		});
+		
+	}
 	
 	function layerPopupOpen(e, i) {
-		console.log("zzzzzzzzz");
 		var pop = $(e);
 
 		pop.css("display","block");
@@ -456,7 +465,7 @@
 					<ul class="load_box">
 						<c:forEach items="${movList }" var="row">
 							<li>
-								<a href="javascript:;" onclick="layerPopupOpen('#g20Video', this);" data-url-utb="${row.mov_id }">
+								<a href="javascript:;" onclick="movInfo('${row.mov_id}', this);" data-url-utb="${row.mov_id }">
 									<img src="https://img.youtube.com/vi/${row.mov_id }/mqdefault.jpg" alt="썸네일 이미지">
 									<div class="txt_guard">
 										<em>${CubeUtils.cutString(row.mov_cn, 20, '..') }</em>

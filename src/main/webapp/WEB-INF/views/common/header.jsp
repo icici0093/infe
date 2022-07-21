@@ -3,8 +3,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
+<head>
   <!-- Favicons -->
-  <link href="/resources/assets/img/favicon.png" rel="icon">
+<!--   <link href="/resources/assets/img/favicon.png" rel="icon"> -->
   <link href="/resources/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- JS -->

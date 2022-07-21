@@ -27,6 +27,9 @@ import com.infe.common.dao.BaseDao;
 
 @Service
 public class SocialService{
+
+	@Autowired
+	private BaseDao baseDao;
 	
 	@Autowired
 	public SocialStore sStore;
@@ -61,8 +64,8 @@ public class SocialService{
 		List<CubeMap> movList = sStore.getMovList(searchMap);
 		int movCount = sStore.getMovCount(searchMap);
 		
-		List<CubeMap> replyList = sStore.getSocialList(searchMap);
-		int replyCount = sStore.getSocialCount(searchMap);
+//		List<CubeMap> replyList = sStore.getSocialList(searchMap);
+//		int replyCount = sStore.getSocialCount(searchMap);
 		
 		// 새 글 표시
 //		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -76,7 +79,7 @@ public class SocialService{
 		model.addAttribute("movList", movList);
 		model.addAttribute("movCount", movCount);
 		model.addAttribute("viewCount", CubeUtils.addComma(movCount+""));
-		model.addAttribute("replyList", replyList);
+//		model.addAttribute("replyList", replyList);
 		model.addAttribute("paramdata", param);
 		model.addAttribute("param_str", CubeUtils.setParamstr(boardParams, param));
 		model.addAttribute("paging", paging);
@@ -103,6 +106,18 @@ public class SocialService{
 		}
 		
 		return rtnParam;
+	}
+	
+	public String movView(HttpServletRequest request, HttpServletResponse response, ModelMap model, RedirectAttributes redirectAttributes ) throws Exception {
+		
+		CubeMap param = new CubeMap(request);
+		System.out.println("adssssssssssss");
+		List<CubeMap> thisList = sStore.getMovInfo(param);
+		
+		model.addAttribute("thisList", thisList);
+//		model.addAttribute("path", path);
+		
+		return THIS_VIEW + "mov_view";
 	}
 
 }

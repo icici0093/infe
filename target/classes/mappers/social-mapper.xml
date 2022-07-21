@@ -34,7 +34,7 @@
 		<include refid="PagingHead"/>
 		SELECT * FROM SOCIAL_REPLY 
 		WHERE USE_YN = 'Y'
-		ORDER BY DP_CNT ASC
+		ORDER BY REG_DT DESC
 		<include refid="PagingBottom"/>	
 	</select>
 	
@@ -46,7 +46,7 @@
 		<include refid="PagingHead"/>
 		SELECT * FROM YOUTUBE_MOV 
 		WHERE USE_YN = 'Y'
-		ORDER BY DP_CNT ASC
+		ORDER BY REG_DT DESC
 		<include refid="PagingBottom"/>	
 	</select>
 	
@@ -111,4 +111,10 @@
                 'Y'
             )
 	</insert>
+	
+	<select id="getMovInfo" parameterType="CubeMap" resultType="CubeMap">
+		SELECT * FROM SOCIAL_REPLY
+		WHERE MOV_ID = #{mov_id}
+		ORDER BY REG_DT DESC
+	</select>
 </mapper>
